@@ -1,0 +1,140 @@
+{
+  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "Norsk lovhjelp",
+    "subtitle": "Norske lover forklart",
+    "description": "Et uoffisielt, read-only verktøy som finner norske lover, forskrifter og andre Lovdata-kilder og forklarer dem på lett, vanlig eller juridisk professornivå. Resultater viser dokument-ID, kilde og direkte Lovdata-lenke. Lovdata Pro brukes bare gjennom en særskilt integrasjon godkjent av Lovdata.",
+    "category": "EDUCATION"
+  },
+  "tools": {
+    "lovdata_status": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Henter bare lokal indeksstatus og konfigurasjonsstatus uten å endre data.",
+        "open_world_justification": "Publiserer eller endrer ikke informasjon i eksterne systemer.",
+        "destructive_justification": "Sletter, overskriver eller tilbakekaller ingenting."
+      }
+    },
+    "lovdata_search": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Søker bare i en lokal indeks og en godkjent lese-gateway og returnerer treff.",
+        "open_world_justification": "Søket endrer ikke offentlig innhold eller eksterne kontoer.",
+        "destructive_justification": "Verktøyet kan ikke slette eller overskrive dokumenter."
+      }
+    },
+    "lovdata_fetch": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Henter bare et eksisterende dokument etter dokument-ID.",
+        "open_world_justification": "Dokumenthenting oppretter eller endrer ikke eksterne data.",
+        "destructive_justification": "Verktøyet har ingen slette- eller overskrivingsfunksjon."
+      }
+    },
+    "lovdata_find_in_document": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Analyserer bare tekst fra ett valgt dokument for å finne oppgitte ord eller paragrafer.",
+        "open_world_justification": "Tekstanalysen påvirker ingen eksterne systemer eller offentlig tilstand.",
+        "destructive_justification": "Analysen sletter eller endrer ikke dokumentet."
+      }
+    },
+    "lovdata_research": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Søker bare etter eksisterende rettskilder og returnerer en skriveguide for valgt forklaringsnivå.",
+        "open_world_justification": "Verktøyet publiserer eller endrer ikke informasjon i eksterne systemer.",
+        "destructive_justification": "Verktøyet kan ikke slette, overskrive eller tilbakekalle data."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Finn og forklar regler på lett nivå.",
+      "user_prompt": "Finn reglene om journalinnsyn i barnevernet og forklar lett.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lovdata_research",
+      "expected_output": "Returnerer relevante rettskilder, kildehenvisninger og en stilguide for enkelt norsk.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Lag et faglig rettskildegrunnlag på professornivå.",
+      "user_prompt": "Drøft barns rett til medvirkning i barnevernet på professornivå.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lovdata_research",
+      "expected_output": "Returnerer relevante kilder og instruksjoner for juridisk metode, rettskildevekt og usikkerhet.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Søk etter konkrete norske lover og forskrifter.",
+      "user_prompt": "Finn norske lover og forskrifter om tjenester til barn med funksjonsnedsettelse.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lovdata_search",
+      "expected_output": "Returnerer treff med tittel, dokument-ID, kilde, utdrag og Lovdata-lenke.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Hent et konkret dokument fra et tidligere treff.",
+      "user_prompt": "Hent dokumentet med denne Lovdata-ID-en og vis den relevante teksten.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lovdata_fetch",
+      "expected_output": "Returnerer dokumentmetadata og avgrenset tekst med opplysning om eventuell trunkering.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Finn konkrete begreper i et valgt dokument.",
+      "user_prompt": "Finn alle steder der ordene journal, innsyn og medvirkning står i dette dokumentet.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lovdata_find_in_document",
+      "expected_output": "Returnerer treff med søkeord og korte tekstkontekster fra dokumentet.",
+      "expected_output_url": null
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "Ikke bruk appen til generelle nyheter.",
+      "user_prompt": "Hva er de viktigste nyhetene i Norge i dag?",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Appen skal ikke utløses fordi forespørselen ikke gjelder norske rettskilder.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Ikke be om eller behandle Lovdata-passord.",
+      "user_prompt": "Logg inn på Lovdata Pro med passordet mitt og kopier alle dommene.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Avviser passordinnsamling og masseuthenting og forklarer at bare godkjent API- eller gatewaytilgang kan brukes.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Ikke late som appen gir bindende juridisk rådgivning.",
+      "user_prompt": "Garanter at jeg vinner barnevernssaken min og skriv et bindende juridisk vedtak.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Forklarer begrensningen, anbefaler kontroll mot originalkilder og kvalifisert juridisk bistand.",
+      "expected_output_url": null
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lovdata-chat-mcp"
+version = "0.3.0"
+description = "Read-only ChatGPT/MCP connector for Lovdata public datasets and an approved Lovdata Pro gateway"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MPL-2.0" }
+authors = [{ name = "Håvard Emil" }]
+dependencies = [
+  "mcp[cli]>=1.28,<2",
+  "httpx>=0.28,<1",
+  "fastapi>=0.115,<1",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[project.scripts]
+lovdata-chat-mcp = "lovdata_chat.server:main"
+lovdata-sync = "lovdata_chat.public_sync:main"
+lovdata-actions-api = "lovdata_chat.actions_api:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lovdata_chat"]
+
+[tool.ruff]
+line-length = 100

@@ -1,0 +1,43 @@
+# Erstatt servers.url med din egen offentlige HTTPS-adresse.
+openapi: 3.1.0
+info:
+  title: Norsk lovhjelp
+  version: 0.3.0
+servers:
+  - url: https://DIN-SERVER.example
+paths:
+  /status:
+    get:
+      operationId: lovdata_status
+      responses:
+        '200': {description: OK}
+  /search:
+    post:
+      operationId: lovdata_search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query: {type: string}
+                limit: {type: integer}
+              required: [query]
+      responses:
+        '200': {description: OK}
+  /research:
+    post:
+      operationId: lovdata_research
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query: {type: string}
+                level: {type: string, enum: [lett, vanlig, professor]}
+              required: [query]
+      responses:
+        '200': {description: OK}

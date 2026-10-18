@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: norsk-lovhjelp-api
+    runtime: docker
+    plan: starter
+    healthCheckPath: /healthz
+    envVars:
+      - key: LOVDATA_SERVER_MODE
+        value: actions
+      - key: MCP_HOST
+        value: 0.0.0.0
+      - key: MCP_PORT
+        value: 8000
+      - key: LOVDATA_DB_PATH
+        value: /var/data/lovdata.sqlite3
+      - key: LOVDATA_DATASET_FILTER
+        value: gjeldende-lover,gjeldende-sentrale-forskrifter
+      - key: LOVDATA_ACTIONS_API_KEY
+        generateValue: true
+      - key: LOVDATA_PRO_GATEWAY_URL
+        sync: false
+      - key: LOVDATA_PRO_GATEWAY_TOKEN
+        sync: false
+    disk:
+      name: lovdata-data
+      mountPath: /var/data
+      sizeGB: 2
