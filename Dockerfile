@@ -8,7 +8,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     LOVDATA_SERVER_MODE=actions
 
 WORKDIR /app
-COPY pyproject.toml README.md ./
+COPY pyproject.toml README.md LICENSE ./
 COPY src ./src
 COPY data ./data
 COPY scripts/docker-entrypoint.sh /usr/local/bin/lovdata-entrypoint

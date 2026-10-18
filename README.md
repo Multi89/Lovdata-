@@ -30,7 +30,7 @@ Dette er **ikke** en offisiell tjeneste fra Lovdata eller offentlig juridisk rå
 
 Du trenger [Python](https://www.python.org/downloads/) **3.11 eller nyere**, internett og Windows PowerShell.
 
-1. Åpne prosjektmappen `norsk-lovhjelp-chatgpt-mobile` i GitHub Desktop (Repository → Show in Explorer).
+1. Pakk ut ZIP-filen. Åpne mappen `lovdata-chat-mcp`.
 2. Klikk i adressefeltet i Filutforsker, skriv `powershell` og trykk Enter.
 3. Lim inn følgende kommandoer, én om gangen:
 
@@ -97,4 +97,4 @@ Kjør testene med `pytest` som vist ovenfor. Tidligere dokumenterte tester og hv
 
 ## Lisens
 
-Prosjektets eksisterende [LICENSE](LICENSE) i GitHub-repositoriet gjelder (MPL-2.0). Denne importpakken overskriver ikke lisensfilen.
+[MIT](LICENSE).

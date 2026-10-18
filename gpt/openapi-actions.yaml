@@ -1,43 +1,158 @@
-# Erstatt servers.url med din egen offentlige HTTPS-adresse.
 openapi: 3.1.0
 info:
-  title: Norsk lovhjelp
+  title: Norsk lovhjelp API
   version: 0.3.0
+  description: >-
+    Read-only søk og dokumenthenting for norske lover, forskrifter og andre
+    Lovdata-kilder. Svar kan tilpasses til lett, vanlig eller professor-nivå.
 servers:
-  - url: https://DIN-SERVER.example
+  - url: https://REPLACE-WITH-YOUR-DOMAIN.example
 paths:
-  /status:
+  /health:
     get:
-      operationId: lovdata_status
+      operationId: checkLovdataStatus
+      summary: Kontroller om Lovdata-indeksen og eventuell Pro-gateway er klare.
       responses:
-        '200': {description: OK}
-  /search:
+        '200':
+          description: Statusinformasjon.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/research:
     post:
-      operationId: lovdata_search
+      operationId: researchNorwegianLaw
+      summary: Finn norske rettskilder til et juridisk spørsmål.
+      description: >-
+        Brukes alltid når brukeren spør om norsk lov, forskrift, rettspraksis,
+        forarbeider eller andre Lovdata-kilder. Returnerer kilder og en stilguide.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                query: {type: string}
-                limit: {type: integer}
-              required: [query]
+              $ref: '#/components/schemas/ResearchRequest'
       responses:
-        '200': {description: OK}
-  /research:
+        '200':
+          description: Relevante rettskilder og skriveinstruksjoner.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/document:
     post:
-      operationId: lovdata_research
+      operationId: readNorwegianLegalDocument
+      summary: Hent tekst og metadata fra ett valgt rettsdokument.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                query: {type: string}
-                level: {type: string, enum: [lett, vanlig, professor]}
-              required: [query]
+              $ref: '#/components/schemas/DocumentRequest'
       responses:
-        '200': {description: OK}
+        '200':
+          description: Dokumenttekst, metadata og kilde.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '404':
+          description: Dokumentet ble ikke funnet.
+  /api/find:
+    post:
+      operationId: findTermsInNorwegianLegalDocument
+      summary: Finn bestemte ord, paragrafer eller juridiske begreper i ett dokument.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FindRequest'
+      responses:
+        '200':
+          description: Treff med korte tekstkontekster.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '404':
+          description: Dokumentet ble ikke funnet.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    ExplanationLevel:
+      type: string
+      enum: [lett, vanlig, professor]
+      default: lett
+    Scope:
+      type: string
+      enum: [auto, public, pro]
+      default: auto
+    ResearchRequest:
+      type: object
+      required: [question]
+      properties:
+        question:
+          type: string
+          minLength: 2
+          maxLength: 2000
+        explanation_level:
+          $ref: '#/components/schemas/ExplanationLevel'
+        scope:
+          $ref: '#/components/schemas/Scope'
+        sources:
+          type: array
+          items:
+            type: string
+          description: For eksempel lov, forskrift, rettsavgjørelse eller forarbeid.
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 8
+    DocumentRequest:
+      type: object
+      required: [document_id]
+      properties:
+        document_id:
+          type: string
+          description: Dokument-ID eller URL fra et tidligere søkeresultat.
+        explanation_level:
+          $ref: '#/components/schemas/ExplanationLevel'
+        scope:
+          $ref: '#/components/schemas/Scope'
+        max_chars:
+          type: integer
+          minimum: 1000
+          maximum: 100000
+          default: 24000
+    FindRequest:
+      type: object
+      required: [document_id, terms]
+      properties:
+        document_id:
+          type: string
+        terms:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items:
+            type: string
+        explanation_level:
+          $ref: '#/components/schemas/ExplanationLevel'
+        scope:
+          $ref: '#/components/schemas/Scope'
+        max_hits:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+security:
+  - bearerAuth: []

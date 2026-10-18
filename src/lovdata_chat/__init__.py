@@ -1,1 +1,3 @@
-__version__ = "0.3.0"
+"""Lovdata Chat MCP connector."""
+
+__version__ = "0.1.0"
